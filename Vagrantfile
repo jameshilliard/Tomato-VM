@@ -2,9 +2,10 @@
 # vi: set ft=ruby :
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+#VAGRANTFILE_API_VERSION = "2"
+#Must have newer than 4.3 virtualbox
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
@@ -39,7 +40,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  # cfg.vm.share_folder ".", "/vagrant", disabled: true
+   config.vm.synced_folder "./vagrantsync", "/vagrant"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -61,6 +63,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #vb.customize [ "modifyvm", :id, "--name", $suggested_hostname ]
     # Memory
     vb.customize [ "modifyvm", :id, "--memory", "4092" ]
+	#CPU up to 4 cores and ioapic
+	vb.customize ["modifyvm", :id, "--ioapic", "on"]
+	vb.customize ["modifyvm", :id, "--cpus", "4"]
+	vb.customize ["modifyvm", :id, "--pae", "on"]
     # Chipset (Supposedly better CPU performance)
     vb.customize [ "modifyvm", :id, "--chipset", "ich9" ]
     # NIC 1 (Better TCP over NAT performance, at least on Windows)
@@ -79,8 +85,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	#end  
 	# Storage Controller
     #  NOTE: name "SATA" for some images,  "SATA Controller" for others
-    #vb.customize ["storagectl", :id, "--name", "SATA", "--hostiocache", "on"]
-
     # Add Second Drive
     # You need to have an environment variable set to the where you want the VM storage path or it will go in pwd
     #  Virtualbox VM path. i.e. type %VBOX_USER_HOME%\VirtualBox.xml | findstr defaultMachineFolder
@@ -88,12 +92,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #if ENV["VBOX_VM_PATH"]
     #  disk2_path = ENV["VBOX_VM_PATH"] + "/" + $suggested_hostname + "/" + "box-disk2" + ".vmdk"
     #else
-      disk2_path = Dir.pwd() + "/" + "box-disk2" + ".vmdk"
+      disk2_path = Dir.pwd() + "/" + "Tomato-Data" + ".vmdk"
     #end
 
-    vb.customize ["storagectl", :id, "--name", "SATAController", "--sataportcount", 2, "--hostiocache", "on"]
-    vb.customize ["createhd", "--filename", disk2_path, "--size", 1024*1024, "--format", "vmdk", "--variant", "Standard"]
-    vb.customize ["storageattach", :id,  "--storagectl", "SATAController", "--port", 1, "--device", 0,  "--type", "hdd", "--medium", disk2_path]
+    vb.customize ["storagectl", :id, "--name", "SATAController", "--controller", "IntelAHCI", "--portcount", "2", "--hostiocache", "on"]
+    vb.customize ["storageattach", :id, "--storagectl", "SATAController", "--port", "0", "--device", "0", "--nonrotational", "on"]
+    vb.customize ["createhd", "--filename", disk2_path, "--size", 300*1024, "--format", "vmdk", "--variant", "Standard"]
+    vb.customize ["storageattach", :id, "--storagectl", "SATAController", "--port", "1", "--device", "0", "--type", "hdd", "--medium", disk2_path]
   end
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
