@@ -1,5 +1,5 @@
 
-class prep-android-build {
+class  prepare-tomato-env{
     Exec {
         path      => [
             '/usr/local/bin',
@@ -12,6 +12,20 @@ class prep-android-build {
         logoutput => false,
     }
 
+	mount { 'resource title':
+		name        => Tomato-Data,
+		ensure      => present,
+		blockdevice => # The device to fsck.  This is property is only...
+		device      => /dev/sdb,
+		dump        => # Whether to dump the mount.  Not all platform...
+		fstype      => ext4,
+		options     => # Mount options for the mounts, as they would...
+		pass        => # The pass in which the mount is...
+		provider    => # The specific backend to use for this `mount...
+		remounts    => true
+		target      => # The file in which to store the mount table....
+		# ...plus any applicable metaparameters.
+	}
     exec { "apt-get update":
 	    command => "/usr/bin/apt-get update",
     }
@@ -49,29 +63,30 @@ class prep-android-build {
     package { "gcc-4.6-multilib": } # would ideally like 4.7
     package { "g++-4.5-multilib": }
     package { "libxml2-utils": }
+	package { "samba": }
 
-    exec { 'install repo':
-        cwd     => '/usr/local/bin/',
-        command => 'bash -c "wget https://dl-ssl.google.com/dl/googlesource/git-repo/repo && chmod u+x repo"',
-        creates => '/usr/local/bin/repo',
-        require => [ Package['wget'], Package['git-core'] ],
-    }
+#    exec { 'install repo':
+#        cwd     => '/usr/local/bin/',
+#        command => 'bash -c "wget https://dl-ssl.google.com/dl/googlesource/git-repo/repo && chmod u+x repo"',
+#        creates => '/usr/local/bin/repo',
+#        require => [ Package['wget'], Package['git-core'] ],
+#    }
 
-    file { "/home/vagrant/.gitconfig" :
-        source  => "/vagrant/gitconfig",
-        owner   => 'vagrant',
-        group   => 'vagrant',
-    }
+#    file { "/home/vagrant/.gitconfig" :
+#        source  => "/vagrant/gitconfig",
+#        owner   => 'vagrant',
+#        group   => 'vagrant',
+#    }
 
-    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
-    exec { 'download and install android sdk':
-        user    => 'vagrant',
-        cwd     => '/home/vagrant',
-        command => 'bash -c "mkdir -p sdk && cd sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20130219.zip && unzip adt-bundle-linux-x86_64-20130219.zip"',
-        timeout => 600,
-        creates => '/home/vagrant/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools/adb',
-        require => [ Package['zip'], Package['wget'] ],
-    }
+#    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
+#    exec { 'download and install android sdk':
+#        user    => 'vagrant',
+#        cwd     => '/home/vagrant',
+#        command => 'bash -c "mkdir -p sdk && cd sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20130219.zip && unzip adt-bundle-linux-x86_64-20130219.zip"',
+#        timeout => 600,
+#        creates => '/home/vagrant/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools/adb',
+#        require => [ Package['zip'], Package['wget'] ],
+#    }
 
     exec { 'update path':
         user    => 'vagrant',
@@ -89,5 +104,5 @@ class prep-android-build {
 
 }
 
-include prep-android-build
+include prepare-tomato-env
 
