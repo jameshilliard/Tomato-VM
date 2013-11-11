@@ -1,15 +1,20 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 #VAGRANTFILE_API_VERSION = "2"
 #Must have newer than 4.3 virtualbox
-
+#Vagrant.require_plugin "vagrant-vbguest"
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+ config.vm.provision :shell, :inline => "service virtualbox-guest-utils stop"
+ config.vm.provision :shell, :inline => "umount -a -t vboxsf"
+ config.vm.provision :shell, :inline => "rmmod vboxsf"
+ config.vm.provision :shell, :inline => "rmmod vboxguest"
+ config.vm.provision :shell, :inline => "apt-get -y -q purge virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11"
+ config.vm.provision :shell, :inline => "sudo reboot"
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "saucy64"
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
@@ -41,7 +46,7 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # cfg.vm.share_folder ".", "/vagrant", disabled: true
-   config.vm.synced_folder "./vagrantsync", "/vagrant"
+   #config.vm.synced_folder "./vagrantsync", "/vagrant"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -60,9 +65,9 @@ Vagrant.configure("2") do |config|
  # Configuration for Virtualbox provider
   config.vm.provider "virtualbox" do |vb|
     # Virtualbox Name
-    #vb.customize [ "modifyvm", :id, "--name", $suggested_hostname ]
+    vb.customize ["modifyvm", :id, "--name", "Tomato-VM", "--ostype", "Ubuntu_64"]
     # Memory
-    vb.customize [ "modifyvm", :id, "--memory", "4092" ]
+    vb.customize ["modifyvm", :id, "--memory", "4092"]
 	#CPU up to 4 cores and ioapic
 	vb.customize ["modifyvm", :id, "--ioapic", "on"]
 	vb.customize ["modifyvm", :id, "--cpus", "4"]
@@ -122,6 +127,9 @@ Vagrant.configure("2") do |config|
   #   puppet.manifests_path = "manifests"
   #   puppet.manifest_file  = "site.pp"
   # end
+  
+  # Guest addons fix
+  
 
   # Enable provisioning with chef solo, specifying a cookbooks path, roles
   # path, and data_bags path (all relative to this Vagrantfile), and adding
