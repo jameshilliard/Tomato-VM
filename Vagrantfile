@@ -3,18 +3,11 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 #VAGRANTFILE_API_VERSION = "2"
 #Must have newer than 4.3 virtualbox
-#Vagrant.require_plugin "vagrant-vbguest"
+Vagrant.require_plugin "vagrant-vbguest"
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
-
- config.vm.provision :shell, :inline => "service virtualbox-guest-utils stop"
- config.vm.provision :shell, :inline => "umount -a -t vboxsf"
- config.vm.provision :shell, :inline => "rmmod vboxsf"
- config.vm.provision :shell, :inline => "rmmod vboxguest"
- config.vm.provision :shell, :inline => "apt-get -y -q purge virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11"
- config.vm.provision :shell, :inline => "sudo reboot"
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "saucy64"
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
