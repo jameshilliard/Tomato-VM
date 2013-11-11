@@ -1,0 +1,3 @@
+[submodule "cookbook-nfs"]
+	path = cookbook-nfs
+	url = https://github.com/atomic-penguin/cookbook-nfs.git
