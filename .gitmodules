@@ -1,3 +1,6 @@
 [submodule "cookbook-nfs"]
 	path = cookbook-nfs
 	url = https://github.com/atomic-penguin/cookbook-nfs.git
+[submodule "line-cookbook"]
+	path = line-cookbook
+	url = https://github.com/someara/line-cookbook.git
