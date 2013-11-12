@@ -138,7 +138,12 @@ Vagrant.configure("2") do |config|
   #   # You may also specify custom JSON attributes:
   #   chef.json = { :mysql_password => "foo" }
   # end
-
+  
+   config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "./cookbook-nfs"
+    chef.add_recipe "nfs"
+	chef.add_role 'nfs_server'
+   end
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
   #
