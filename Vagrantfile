@@ -23,16 +23,20 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network :private_network, ip: "192.168.33.10"
+   #config.vm.network :private_network, ip: "10.12.13.14"
+   #config.vm.network :dhcp
+   #config.vm.network :hostonly, "10.11.12.13"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  # config.vm.network :public_network
+   #config.vm.network :public_network
 
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
   # config.ssh.forward_agent = true
+  config.nfs.map_uid = Process.uid
+  config.nfs.map_gid = Process.gid
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -40,6 +44,7 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # cfg.vm.share_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder "./vagrantsync", "/vagrant"
+  #config.vm.synced_folder "v:", "/", nfs: true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -68,13 +73,11 @@ Vagrant.configure("2") do |config|
     # Chipset (Supposedly better CPU performance)
     vb.customize [ "modifyvm", :id, "--chipset", "ich9" ]
     # NIC 1 (Better TCP over NAT performance, at least on Windows)
-	vb.customize ["modifyvm", :id, "--nic1", "nat"] 
-	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"]
-    vb.customize ["modifyvm", :id, "--nictype1", "virtio"]  
+	vb.customize ["modifyvm", :id, "--nic1", "nat", "--nictype1", "virtio"] 
+	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"]  
     # NIC 2 (Host Only Access)
-	#vb.customize ["modifyvm", :id, "--nic2", "hostonly"] 
-    #vb.customize ["modifyvm", :id, "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]	
-    #vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
+	vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--nictype2", "virtio"] 
+    vb.customize ["modifyvm", :id, "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]	
 	#config.vm.network :hostonly, "10.10.10.10"
 	#begin
 	#  vb.customize ["dhcpserver", "modify", "--netname", "hostonly", "--enable", "--ip", "10.10.10.0", "--netmask", "255.255.255.254", "--lowerip", "10.10.10.1", "--upperip", "10.10.10.1"]
@@ -135,15 +138,13 @@ Vagrant.configure("2") do |config|
   #   chef.add_recipe "mysql"
   #   chef.add_role "web"
   #
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "./cookbook-nfs"
+    chef.nfs = true
+  end
   #   # You may also specify custom JSON attributes:
   #   chef.json = { :mysql_password => "foo" }
   # end
-  
-   config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = "./cookbook-nfs"
-    chef.add_recipe "nfs"
-	chef.add_role 'nfs_server'
-   end
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
   #
