@@ -1,31 +1,23 @@
 
-class  prepare-tomato-env{
-    Exec {
-        path      => [
-            '/usr/local/bin',
-            '/opt/local/bin',
-            '/usr/bin', 
-            '/usr/sbin', 
-            '/bin',
-            '/sbin',
-            ],
-        logoutput => false,
+class  environment{
+    package { "haraldsk-nfs":
+        ensure => "installed"
     }
 
-	mount { 'resource title':
-		name        => Tomato-Data,
-		ensure      => present,
-		blockdevice => # The device to fsck.  This is property is only...
-		device      => /dev/sdb,
-		dump        => # Whether to dump the mount.  Not all platform...
-		fstype      => ext4,
-		options     => # Mount options for the mounts, as they would...
-		pass        => # The pass in which the mount is...
-		provider    => # The specific backend to use for this `mount...
-		remounts    => true
-		target      => # The file in which to store the mount table....
-		# ...plus any applicable metaparameters.
-	}
+#	mount { 'resource title':
+#		name        => Tomato-Data,
+#		ensure      => present,
+#		blockdevice => # The device to fsck.  This is property is only...
+#		device      => /dev/sdb,
+#		dump        => # Whether to dump the mount.  Not all platform...
+#		fstype      => ext4,
+#		options     => # Mount options for the mounts, as they would...
+#		pass        => # The pass in which the mount is...
+#		provider    => # The specific backend to use for this `mount...
+#		remounts    => true
+#		target      => # The file in which to store the mount table....
+#		# ...plus any applicable metaparameters.
+#	}
     exec { "apt-get update":
 	    command => "/usr/bin/apt-get update",
     }
@@ -61,7 +53,7 @@ class  prepare-tomato-env{
     package { "lib32ncurses5-dev": }
     package { "lib32readline-gplv2-dev": }
     package { "gcc-4.6-multilib": } # would ideally like 4.7
-    package { "g++-4.5-multilib": }
+#    package { "g++-4.5-multilib": }
     package { "libxml2-utils": }
 	package { "samba": }
 
@@ -88,11 +80,11 @@ class  prepare-tomato-env{
 #        require => [ Package['zip'], Package['wget'] ],
 #    }
 
-    exec { 'update path':
-        user    => 'vagrant',
-        cwd     => '/home/vagrant',
-        command => 'bash -c "echo export PATH=\"\${PATH}:~/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools\" >> .bashrc"',
-    }
+#    exec { 'update path':
+#        user    => 'vagrant',
+#        cwd     => '/home/vagrant',
+#        command => 'bash -c "echo export PATH=\"\${PATH}:~/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools\" >> .bashrc"',
+#    }
 
     # repo init/sync:
     # repo init -u git://github.com/CyanogenMod/android.git -b cm-10.1
@@ -104,5 +96,5 @@ class  prepare-tomato-env{
 
 }
 
-include prepare-tomato-env
+include environment
 

@@ -23,9 +23,10 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-   #config.vm.network :private_network, ip: "10.12.13.14"
+   #config.vm.network :private_network, 
    #config.vm.network :dhcp
-   #config.vm.network :hostonly, "10.11.12.13"
+   #config.vm.network :hostonly, "10.11.12.13", :netmask = "255.255.255.0
+   config.vm.network "private_network", ip: "192.168.56.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -35,8 +36,8 @@ Vagrant.configure("2") do |config|
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
   # config.ssh.forward_agent = true
-  config.nfs.map_uid = Process.uid
-  config.nfs.map_gid = Process.gid
+  #config.nfs.map_uid = Process.uid
+  #config.nfs.map_gid = Process.gid
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -44,7 +45,7 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # cfg.vm.share_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder "./vagrantsync", "/vagrant"
-  #config.vm.synced_folder "v:", "/", nfs: true
+  #config.vm.synced_folder "./root", "/","id: "vagrant-root" , nfs: true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -62,6 +63,7 @@ Vagrant.configure("2") do |config|
   # information on available options.
  # Configuration for Virtualbox provider
   config.vm.provider "virtualbox" do |vb|
+    #vb.destroy_unused_network_interfaces = true
     # Virtualbox Name
     vb.customize ["modifyvm", :id, "--name", "Tomato-VM", "--ostype", "Ubuntu_64"]
     # Memory
@@ -77,7 +79,7 @@ Vagrant.configure("2") do |config|
 	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"]  
     # NIC 2 (Host Only Access)
 	vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--nictype2", "virtio"] 
-    vb.customize ["modifyvm", :id, "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]	
+    #vb.customize ["modifyvm", :id, "--hostonlyadapter2", :interface]
 	#config.vm.network :hostonly, "10.10.10.10"
 	#begin
 	#  vb.customize ["dhcpserver", "modify", "--netname", "hostonly", "--enable", "--ip", "10.10.10.0", "--netmask", "255.255.255.254", "--lowerip", "10.10.10.1", "--upperip", "10.10.10.1"]
@@ -101,6 +103,7 @@ Vagrant.configure("2") do |config|
     vb.customize ["createhd", "--filename", disk2_path, "--size", 300*1024, "--format", "vmdk", "--variant", "Standard"]
     vb.customize ["storageattach", :id, "--storagectl", "SATAController", "--port", "1", "--device", "0", "--type", "hdd", "--medium", disk2_path]
   end
+
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
   # You will need to create the manifests directory and a manifest in
@@ -119,11 +122,7 @@ Vagrant.configure("2") do |config|
   # #               Managed by Puppet.\n"
   # # }
   #
-  # config.vm.provision :puppet do |puppet|
-  #   puppet.manifests_path = "manifests"
-  #   puppet.manifest_file  = "site.pp"
-  # end
-  
+  config.vm.provision "puppet"
   # Guest addons fix
   
 
@@ -138,10 +137,13 @@ Vagrant.configure("2") do |config|
   #   chef.add_recipe "mysql"
   #   chef.add_role "web"
   #
-  config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = "./cookbook-nfs"
-    chef.nfs = true
-  end
+  #config.vm.provision :chef_solo do |chef|
+  #  chef.cookbooks_path = "./cookbook-nfs"
+  #  chef.nfs = true
+	#chef.nfs = "packages"
+	#chef.nfs = "service"
+	#chef.nfs = "config"
+  #end
   #   # You may also specify custom JSON attributes:
   #   chef.json = { :mysql_password => "foo" }
   # end
