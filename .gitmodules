@@ -4,3 +4,6 @@
 [submodule "line-cookbook"]
 	path = line-cookbook
 	url = https://github.com/someara/line-cookbook.git
+[submodule "puppet-module-nfs"]
+	path = puppet-module-nfs
+	url = https://github.com/haraldsk/puppet-module-nfs.git
