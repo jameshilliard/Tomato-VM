@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "saucy64"
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
 
+
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
@@ -122,7 +123,6 @@ Vagrant.configure("2") do |config|
   # #               Managed by Puppet.\n"
   # # }
   #
-  config.vm.provision "puppet"
   # Guest addons fix
   
 
@@ -138,25 +138,10 @@ Vagrant.configure("2") do |config|
   #   chef.add_role "web"
   #
 
-  config.vm.provision :chef_solo do |chef|
-   chef.cookbooks_path = "line-cookbook"
-   chef.cookbooks_path = "cookbook-nfs"
-   chef.add_recipe "nfs::server"
-  nfs_export “/exports” do
-    network ‘*’
-    writeable true
-    sync true
-    directory ‘/var/www/typo3.flow’
-    anonuser ‘vagrant’
-    anongroup ‘www-data’
-    options [‘no_subtree_check’]
-  end
-
-# restart nfs server
-  execute “restart nfs server” do
-    command “/etc/init.d/nfs-kernel-server restart”
-  end
-
+config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "manifests"
+    puppet.module_path = "."
+    puppet.options = ['--verbose']
 end
   #   # You may also specify custom JSON attributes:
   #   chef.json = { :mysql_password => "foo" }
