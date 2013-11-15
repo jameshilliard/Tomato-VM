@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
    #config.vm.network :private_network, 
    #config.vm.network :dhcp
    #config.vm.network :hostonly, "10.11.12.13", :netmask = "255.255.255.0
-   config.vm.network "private_network", ip: "192.168.56.10"
+   config.vm.network "private_network", ip: "192.168.56.15"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -137,13 +137,27 @@ Vagrant.configure("2") do |config|
   #   chef.add_recipe "mysql"
   #   chef.add_role "web"
   #
-  #config.vm.provision :chef_solo do |chef|
-  #  chef.cookbooks_path = "./cookbook-nfs"
-  #  chef.nfs = true
-	#chef.nfs = "packages"
-	#chef.nfs = "service"
-	#chef.nfs = "config"
-  #end
+
+  config.vm.provision :chef_solo do |chef|
+   chef.cookbooks_path = "line-cookbook"
+   chef.cookbooks_path = "cookbook-nfs"
+   chef.add_recipe "nfs::server"
+  nfs_export “/exports” do
+    network ‘*’
+    writeable true
+    sync true
+    directory ‘/var/www/typo3.flow’
+    anonuser ‘vagrant’
+    anongroup ‘www-data’
+    options [‘no_subtree_check’]
+  end
+
+# restart nfs server
+  execute “restart nfs server” do
+    command “/etc/init.d/nfs-kernel-server restart”
+  end
+
+end
   #   # You may also specify custom JSON attributes:
   #   chef.json = { :mysql_password => "foo" }
   # end
