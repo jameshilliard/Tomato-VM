@@ -7,3 +7,12 @@
 [submodule "puppet-module-nfs"]
 	path = puppet-module-nfs
 	url = https://github.com/haraldsk/puppet-module-nfs.git
+[submodule "puppetlabs-stdlib"]
+	path = puppetlabs-stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
+[submodule "puppetlabs-concat"]
+	path = puppetlabs-concat
+	url = https://github.com/puppetlabs/puppetlabs-concat.git
+[submodule "facter"]
+	path = facter
+	url = https://github.com/puppetlabs/facter.git
