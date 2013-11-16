@@ -1,6 +1,6 @@
-
 class nfsshare{
-    server {
+
+    node server {
     include nfs::server
     nfs::server::export{ '/home':
       ensure => 'mounted',
