@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "saucy64"
+  config.vm.box = "vagrant-ubuntu-saucy-64"
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
 
 
@@ -79,7 +79,9 @@ Vagrant.configure("2") do |config|
     vb.customize [ "modifyvm", :id, "--chipset", "ich9" ]
     # NIC 1 (Better TCP over NAT performance, at least on Windows)
 	vb.customize ["modifyvm", :id, "--nic1", "nat", "--nictype1", "virtio"] 
-	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"]  
+	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"] 
+	#vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+	vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     # NIC 2 (Host Only Access)
 	vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--nictype2", "virtio"] 
     #vb.customize ["modifyvm", :id, "--hostonlyadapter2", :interface]
@@ -139,7 +141,6 @@ Vagrant.configure("2") do |config|
   #   chef.add_recipe "mysql"
   #   chef.add_role "web"
   #
-
 config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
     puppet.module_path = ""
