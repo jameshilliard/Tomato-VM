@@ -41,8 +41,6 @@ Vagrant.configure("2") do |config|
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
   # config.ssh.forward_agent = true
-  config.nfs.map_uid = Process.uid
-  config.nfs.map_gid = Process.gid
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
