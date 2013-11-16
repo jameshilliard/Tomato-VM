@@ -1,8 +1,8 @@
 
 class nfsshare{
-  node server {
-    include nfs::server::ubuntu
-    nfs::server{ '/data_folder':
+    server {
+    include nfs::server
+    nfs::server::export{ '/home':
       ensure => 'mounted',
       clients => '192.168.56.0/24(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)'
   }
