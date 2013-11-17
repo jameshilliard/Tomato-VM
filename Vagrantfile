@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
    #config.vm.network :dhcp
    #config.vm.network :hostonly, "10.11.12.13", :netmask = "255.255.255.0
    #config.vm.network "private_network", ip: "192.168.56.15"
-   config.vm.network "private_network", ip: "192.168.56.15"
+   #config.vm.network "private_network", ip: "192.168.56.15"
    config.vm.network :forwarded_port, guest: 111, host: 111
    config.vm.network :forwarded_port, guest: 1110, host: 1110
    config.vm.network :forwarded_port, guest: 2049, host: 2049
@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
     # Virtualbox Name
     vb.customize ["modifyvm", :id, "--name", "Tomato-VM", "--ostype", "Ubuntu_64"]
     # Memory
-    vb.customize ["modifyvm", :id, "--memory", "4092"]
+    vb.customize ["modifyvm", :id, "--memory", "6144"]
 	#CPU up to 4 cores and ioapic
 	vb.customize ["modifyvm", :id, "--ioapic", "on"]
 	vb.customize ["modifyvm", :id, "--cpus", "4"]

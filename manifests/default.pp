@@ -25,6 +25,7 @@ class ubuntu-environment{
         require => Exec['apt-get update'],
     }
     package { "nfs-kernel-server": }
+	package { "nfs-common": }
     package { "build-essential": }
     package { "git-core": }
     package { "curl": }
@@ -70,14 +71,14 @@ service { "nfs-kernel-server":
   ensure => "running",
   require => Package["nfs-kernel-server"],
 }
-service { "rpcbind":
-  ensure => "running",
-  require => Package["nfs-kernel-server"],
-}
-service { "idmapd":
-  ensure => "running",
-  require => Package["nfs-kernel-server"],
-}
+# service { "rpcbind":
+  # ensure => "running",
+  # require => Package["nfs-kernel-server"],
+# }
+# service { "idmapd":
+  # ensure => "running",
+  # require => Package["nfs-kernel-server"],
+# }
 
 
     file {'nfsexports':
@@ -85,35 +86,35 @@ service { "idmapd":
       ensure  => file,
       path    => '/etc/exports',
 	  require => Package["nfs-kernel-server"],
-      content => "/home *(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)
+      content => "/home   *(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)
 ",
     }
 	
-	file {'statdports':
-      notify  => Service["rpcbind"],
-      ensure  => file,
-      path    => '/etc/default/nfs-common',
-      require => Package["nfs-kernel-server"],
-      content => 'NEED_STATD=
-STATDOPTS="--port 32765 --outgoing-port 32766"
-NEED_GSSD=
-',
-    }
+	# file {'statdports':
+      # notify  => Service["rpcbind"],
+      # ensure  => file,
+      # path    => '/etc/default/nfs-common',
+      # require => Package["nfs-kernel-server"],
+      # content => 'NEED_STATD=
+# STATDOPTS="-p 32765 -o 32766"
+# NEED_GSSD=
+# ',
+    # }
 	
 	
-	file {'mountdconfig':
-      notify  => Service["nfs-kernel-server"],
-      ensure  => file,
-      path    => '/etc/default/nfs-kernel-server',
-	  require => Package["nfs-kernel-server"],
-      content => 'RPCNFSDCOUNT=8
-RPCNFSDPRIORITY=0
-RPCMOUNTDOPTS="--manage-gids --no-nfs-version 4 -p 4045 "
-NEED_SVCGSSD=
-RPCSVCGSSDOPTS=
-RPCNFSDOPTS=
-',
-    }
+	# file {'mountdconfig':
+      # notify  => Service["nfs-kernel-server"],
+      # ensure  => file,
+      # path    => '/etc/default/nfs-kernel-server',
+	  # require => Package["nfs-kernel-server"],
+      # content => 'RPCNFSDCOUNT=8
+# RPCNFSDPRIORITY=0
+# RPCMOUNTDOPTS="--manage-gids -p 4045"
+# NEED_SVCGSSD=no
+# RPCSVCGSSDOPTS=no
+# RPCNFSDOPTS=no
+# ',
+     # }
 #    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
 #    exec { 'download and install android sdk':
 #        user    => 'vagrant',
