@@ -90,8 +90,36 @@ service { "nfs-kernel-server":
 ",
     }
 	
+	file {'lockdstatic':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/modprobe.d/local.conf',
+	  require => Package["nfs-kernel-server"],
+      content => "options lockd nlm_udpport=32768 nlm_tcpport=32768
+options nfs callback_tcpport=32764
+",
+    }
+	
+	file {'quotastatic':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/default/quota',
+	  require => Package["nfs-kernel-server"],
+      content => 'RPCRQUOTADOPTS="-p 32769"
+',
+    }
+	
+	file {'quotastatic':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/default/quota',
+	  require => Package["nfs-kernel-server"],
+      content => 'RPCRQUOTADOPTS="-p 32769"
+',
+    }
+	
 	# file {'statdports':
-      # notify  => Service["rpcbind"],
+      # notify  => Service["nfs-kernel-server"],
       # ensure  => file,
       # path    => '/etc/default/nfs-common',
       # require => Package["nfs-kernel-server"],

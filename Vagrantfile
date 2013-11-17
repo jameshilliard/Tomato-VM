@@ -37,10 +37,16 @@ Vagrant.configure("2") do |config|
    config.vm.network :forwarded_port, guest: 2049, host: 2049, :protocol => "udp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 4045, host: 4045, :protocol => "tcp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 4045, host: 4045, :protocol => "udp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32764, host: 32764, :protocol => "tcp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32764, host: 32764, :protocol => "udp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 32765, host: 32765, :protocol => "tcp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 32765, host: 32765, :protocol => "udp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 32766, host: 32766, :protocol => "tcp", host_ip: "127.0.0.1"
    config.vm.network :forwarded_port, guest: 32766, host: 32766, :protocol => "udp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32768, host: 32768, :protocol => "tcp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32768, host: 32768, :protocol => "udp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32769, host: 32769, :protocol => "tcp", host_ip: "127.0.0.1"
+   config.vm.network :forwarded_port, guest: 32769, host: 32769, :protocol => "udp", host_ip: "127.0.0.1"
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
