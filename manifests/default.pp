@@ -118,31 +118,31 @@ options nfs callback_tcpport=32764
 ',
     }
 	
-	# file {'statdports':
-      # notify  => Service["nfs-kernel-server"],
-      # ensure  => file,
-      # path    => '/etc/default/nfs-common',
-      # require => Package["nfs-kernel-server"],
-      # content => 'NEED_STATD=
-# STATDOPTS="-p 32765 -o 32766"
-# NEED_GSSD=
-# ',
-    # }
+	file {'statdports':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/default/nfs-common',
+      require => Package["nfs-kernel-server"],
+      content => 'NEED_STATD=
+STATDOPTS="--port 32765 --outgoing-port 32766"
+NEED_GSSD=
+',
+    }
 	
 	
-	# file {'mountdconfig':
-      # notify  => Service["nfs-kernel-server"],
-      # ensure  => file,
-      # path    => '/etc/default/nfs-kernel-server',
-	  # require => Package["nfs-kernel-server"],
-      # content => 'RPCNFSDCOUNT=8
-# RPCNFSDPRIORITY=0
-# RPCMOUNTDOPTS="--manage-gids -p 4045"
-# NEED_SVCGSSD=no
-# RPCSVCGSSDOPTS=no
-# RPCNFSDOPTS=no
-# ',
-     # }
+	file {'mountdconfig':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/default/nfs-kernel-server',
+	  require => Package["nfs-kernel-server"],
+      content => 'RPCNFSDCOUNT=8
+RPCNFSDPRIORITY=0
+RPCMOUNTDOPTS="--manage-gids -p 32767"
+NEED_SVCGSSD=
+RPCSVCGSSDOPTS=
+RPCNFSDOPTS=
+',
+     }
 #    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
 #    exec { 'download and install android sdk':
 #        user    => 'vagrant',
