@@ -122,9 +122,9 @@ NEED_GSSD=
       ensure  => file,
       path    => '/etc/default/nfs-kernel-server',
 	  require => Package["nfs-kernel-server"],
-      content => 'RPCNFSDCOUNT=1
+      content => 'RPCNFSDCOUNT=8
 RPCNFSDPRIORITY=0
-RPCMOUNTDOPTS="--manage-gids -p 32767"
+RPCMOUNTDOPTS="-p 32767 --no-nfs-version 4 --nfs-version 3"
 NEED_SVCGSSD=
 RPCSVCGSSDOPTS=
 RPCNFSDOPTS=
