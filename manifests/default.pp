@@ -100,15 +100,6 @@ NEED_GSSD=
 ",
     }
 	
-file {'lockdports':
-      notify  => Service["resolvconf"],
-      ensure  => file,
-      path    => '/etc/modprobe.d/options',
-      require => Package["nfs-kernel-server"],
-      content => "options lockd nlm_udpport=32768 nlm_tcpport=32768
-options nfs callback_tcpport=32764
-",
-    }
 	
 	file {'mountdconfig':
       notify  => Service["nfs-kernel-server"],
