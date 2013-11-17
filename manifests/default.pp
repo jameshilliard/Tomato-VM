@@ -109,14 +109,6 @@ options nfs callback_tcpport=32764
 ',
     }
 	
-	file {'quotastatic':
-      notify  => Service["nfs-kernel-server"],
-      ensure  => file,
-      path    => '/etc/default/quota',
-	  require => Package["nfs-kernel-server"],
-      content => 'RPCRQUOTADOPTS="-p 32769"
-',
-    }
 	
 	file {'statdports':
       notify  => Service["nfs-kernel-server"],
