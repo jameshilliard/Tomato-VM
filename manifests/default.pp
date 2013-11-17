@@ -71,14 +71,10 @@ service { "nfs-kernel-server":
   ensure => "running",
   require => Package["nfs-kernel-server"],
 }
-# service { "rpcbind":
-  # ensure => "running",
-  # require => Package["nfs-kernel-server"],
-# }
-# service { "idmapd":
-  # ensure => "running",
-  # require => Package["nfs-kernel-server"],
-# }
+service { "rpcbind":
+  ensure => "running",
+  require => Package["nfs-kernel-server"],
+}
 
 
     file {'nfsexports':
@@ -96,7 +92,6 @@ service { "nfs-kernel-server":
       path    => '/etc/modprobe.d/local.conf',
 	  require => Package["nfs-kernel-server"],
       content => "options lockd nlm_udpport=32768 nlm_tcpport=32768
-options nfs callback_tcpport=32764
 ",
     }
 	
@@ -123,11 +118,11 @@ NEED_GSSD=
 	
 	
 	file {'mountdconfig':
-      notify  => Service["nfs-kernel-server"],
+      notify  => Service["rpcbind"],
       ensure  => file,
       path    => '/etc/default/nfs-kernel-server',
 	  require => Package["nfs-kernel-server"],
-      content => 'RPCNFSDCOUNT=8
+      content => 'RPCNFSDCOUNT=1
 RPCNFSDPRIORITY=0
 RPCMOUNTDOPTS="--manage-gids -p 32767"
 NEED_SVCGSSD=
