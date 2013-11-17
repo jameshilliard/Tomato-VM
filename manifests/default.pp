@@ -74,7 +74,7 @@ service { "rpcbind":
   ensure => "running",
   require => Package["nfs-kernel-server"],
 }
-service { "resolvconf":
+service { "idmapd":
   ensure => "running",
   require => Package["nfs-kernel-server"],
 }
@@ -85,7 +85,7 @@ service { "resolvconf":
       ensure  => file,
       path    => '/etc/exports',
 	  require => Package["nfs-kernel-server"],
-      content => "/home 0.0.0.0(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)
+      content => "/home *(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)
 ",
     }
 	
@@ -94,10 +94,10 @@ service { "resolvconf":
       ensure  => file,
       path    => '/etc/default/nfs-common',
       require => Package["nfs-kernel-server"],
-      content => "NEED_STATD=
-STATDOPTS='--port 32765 --outgoing-port 32766'
+      content => 'NEED_STATD=
+STATDOPTS="--port 32765 --outgoing-port 32766"
 NEED_GSSD=
-",
+',
     }
 	
 	
@@ -106,13 +106,13 @@ NEED_GSSD=
       ensure  => file,
       path    => '/etc/default/nfs-kernel-server',
 	  require => Package["nfs-kernel-server"],
-      content => "RPCNFSDCOUNT=8
+      content => 'RPCNFSDCOUNT=8
 RPCNFSDPRIORITY=0
-RPCMOUNTDOPTS='-p 4045 --no-nfs-version 4'
+RPCMOUNTDOPTS="--manage-gids --no-nfs-version 4 -p 4045 "
 NEED_SVCGSSD=
 RPCSVCGSSDOPTS=
 RPCNFSDOPTS=
-",
+',
     }
 #    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
 #    exec { 'download and install android sdk':
