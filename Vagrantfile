@@ -142,10 +142,6 @@ Vagrant.configure("2") do |config|
   #   chef.add_role "web"
   #
 config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "manifests"
-    puppet.module_path = ""
-	puppet.manifest_file  = "default.pp"
-	puppet.options = "include nfs::server::ubuntu"
     puppet.options = ['--verbose']
 end
   #   # You may also specify custom JSON attributes:
