@@ -1,4 +1,4 @@
-class nfsshare{
+class ubuntu-environment{
 
 
 
@@ -24,7 +24,7 @@ class nfsshare{
         ensure  => present,
         require => Exec['apt-get update'],
     }
-
+    package { "nfs-kernel-server": }
     package { "build-essential": }
     package { "git-core": }
     package { "curl": }
@@ -53,7 +53,6 @@ class nfsshare{
     package { "gcc-4.6-multilib": } # would ideally like 4.7
 #    package { "g++-4.5-multilib": }
     package { "libxml2-utils": }
-	package { "samba": }
 
 #    exec { 'install repo':
 #        cwd     => '/usr/local/bin/',
@@ -67,7 +66,63 @@ class nfsshare{
 #        owner   => 'vagrant',
 #        group   => 'vagrant',
 #    }
+service { "nfs-kernel-server":
+  ensure => "running",
+  require => Package["nfs-kernel-server"],
+}
+service { "rpcbind":
+  ensure => "running",
+  require => Package["nfs-kernel-server"],
+}
+service { "resolvconf":
+  ensure => "running",
+  require => Package["nfs-kernel-server"],
+}
 
+
+    file {'nfsexports':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/exports',
+	  require => Package["nfs-kernel-server"],
+      content => "/home 0.0.0.0(rw,insecure,sync,all_squash,no_subtree_check,anonuid=1000,anongid=1000)
+",
+    }
+	
+	file {'statdports':
+      notify  => Service["rpcbind"],
+      ensure  => file,
+      path    => '/etc/default/nfs-common',
+      require => Package["nfs-kernel-server"],
+      content => "NEED_STATD=
+STATDOPTS='--port 32765 --outgoing-port 32766'
+NEED_GSSD=
+",
+    }
+	
+file {'lockdports':
+      notify  => Service["resolvconf"],
+      ensure  => file,
+      path    => '/etc/modprobe.d/options',
+      require => Package["nfs-kernel-server"],
+      content => "options lockd nlm_udpport=32768 nlm_tcpport=32768
+options nfs callback_tcpport=32764
+",
+    }
+	
+	file {'mountdconfig':
+      notify  => Service["nfs-kernel-server"],
+      ensure  => file,
+      path    => '/etc/default/nfs-kernel-server',
+	  require => Package["nfs-kernel-server"],
+      content => "RPCNFSDCOUNT=8
+RPCNFSDPRIORITY=0
+RPCMOUNTDOPTS='-p 4045 --no-nfs-version 4'
+NEED_SVCGSSD=
+RPCSVCGSSDOPTS=
+RPCNFSDOPTS=
+",
+    }
 #    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
 #    exec { 'download and install android sdk':
 #        user    => 'vagrant',
@@ -93,4 +148,5 @@ class nfsshare{
     # ./get-prebuilts
 
 }
-}
+
+include ubuntu-environment

@@ -29,10 +29,12 @@ Vagrant.configure("2") do |config|
    #config.vm.network :hostonly, "10.11.12.13", :netmask = "255.255.255.0
    #config.vm.network "private_network", ip: "192.168.56.15"
    #config.vm.network "private_network", ip: "192.168.56.15"
-   config.vm.network "forwarded_port", guest: 111, host: 111
-   config.vm.network "forwarded_port", guest: 1110, host: 1110
-   config.vm.network "forwarded_port", guest: 2049, host: 2049
-   config.vm.network "forwarded_port", guest: 4045, host: 4045
+   config.vm.network :forwarded_port, guest: 111, host: 111
+   config.vm.network :forwarded_port, guest: 1110, host: 1110
+   config.vm.network :forwarded_port, guest: 2049, host: 2049
+   config.vm.network :forwarded_port, guest: 4045, host: 4045
+   config.vm.network :forwarded_port, guest: 32765, host: 32765
+   config.vm.network :forwarded_port, guest: 32766, host: 32766
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
@@ -81,7 +83,7 @@ Vagrant.configure("2") do |config|
 	vb.customize ["modifyvm", :id, "--nic1", "nat", "--nictype1", "virtio"] 
 	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"] 
 	#vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-	vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+	#vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     # NIC 2 (Host Only Access)
 	#vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--nictype2", "virtio"] 
     #vb.customize ["modifyvm", :id, "--hostonlyadapter2", :interface]
