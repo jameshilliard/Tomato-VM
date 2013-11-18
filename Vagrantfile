@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
 	vb.customize ["modifyvm", :id, "--nic1", "nat", "--nictype1", "virtio"] 
 	vb.customize ["modifyvm", :id, "--natsettings1", "9000,1024,1024,1024,1024"] 
 	#vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-	#vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+	vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     # NIC 2 (Host Only Access)
 	#vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--nictype2", "virtio"] 
     #vb.customize ["modifyvm", :id, "--hostonlyadapter2", :interface]
